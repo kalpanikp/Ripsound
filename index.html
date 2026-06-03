@@ -4,93 +4,104 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>RIPSOUND</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg: #070707; --s: #0f0f0f; --b: #1c1c1c;
-    --accent: #d4ff1e; --red: #ff3f6c; --green: #1effa0;
-    --text: #f2f2f2; --muted: #4a4a4a;
-    --mono: 'Space Mono', monospace; --sans: 'Syne', sans-serif;
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#070707;--s:#0f0f0f;--b:#1c1c1c;
+    --accent:#d4ff1e;--red:#ff3f6c;--green:#1effa0;
+    --text:#f2f2f2;--muted:#4a4a4a;
+    --mono:'Space Mono',monospace;--sans:'Syne',sans-serif;
   }
-  html { -webkit-tap-highlight-color: transparent; }
-  body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; }
-  body::before {
-    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
-    background-image: linear-gradient(rgba(212,255,30,.018) 1px, transparent 1px), linear-gradient(90deg, rgba(212,255,30,.018) 1px, transparent 1px);
-    background-size: 44px 44px;
-  }
-  .page { position: relative; z-index: 1; max-width: 520px; margin: 0 auto; padding: 0 18px 100px; }
-  header { padding: 36px 0 28px; border-bottom: 1px solid var(--b); margin-bottom: 28px; display: flex; align-items: center; justify-content: space-between; }
-  .logo { font-size: 34px; font-weight: 800; letter-spacing: -1.5px; line-height: 1; }
-  .logo em { color: var(--accent); font-style: normal; }
-  .wave { display: flex; gap: 3px; align-items: center; height: 20px; margin-top: 8px; }
-  .wb { width: 3px; border-radius: 2px; background: var(--accent); opacity: .3; animation: wv var(--d,.8s) ease-in-out infinite alternate; animation-delay: var(--dl,0s); transform-origin: bottom; }
-  @keyframes wv { from{transform:scaleY(.1)} to{transform:scaleY(1)} }
-  .powered { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
-  .powered em { color: var(--accent); font-style: normal; }
-  .plat-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; }
-  .plat-chip { font-family: var(--mono); font-size: 9px; padding: 5px 10px; border: 1px solid var(--b); color: var(--muted); text-transform: uppercase; letter-spacing: .5px; user-select: none; }
-  .plat-chip.ayt { border-color:#ff4040; color:#ff4040; background:rgba(255,64,64,.06); }
-  .plat-chip.asc { border-color:#ff5500; color:#ff5500; background:rgba(255,85,0,.06); }
-  .plat-chip.amc { border-color:#7040ff; color:#7040ff; background:rgba(112,64,255,.06); }
-  .plat-chip.aig { border-color:#e1306c; color:#e1306c; background:rgba(225,48,108,.06); }
-  .lbl { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); margin-bottom: 8px; display: block; }
-  .url-wrap { display: flex; border: 1px solid var(--b); margin-bottom: 20px; transition: border-color .2s, box-shadow .2s; }
-  .url-wrap:focus-within { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
-  .url-wrap.err { border-color: var(--red); box-shadow: 0 0 0 1px var(--red); }
-  .url-input { flex: 1; min-width: 0; background: var(--s); border: none; outline: none; padding: 15px 14px; font-family: var(--mono); font-size: 12px; color: var(--text); caret-color: var(--accent); }
-  .url-input::placeholder { color: #242424; }
-  .paste-btn { background: var(--s); border: none; border-left: 1px solid var(--b); padding: 0 14px; font-family: var(--mono); font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all .15s; white-space: nowrap; }
-  .paste-btn:active { color: var(--accent); background: rgba(212,255,30,.07); }
-  .fmt-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 7px; margin-bottom: 18px; }
-  .fmt-card { border: 1px solid var(--b); background: var(--s); padding: 16px 10px; text-align: center; cursor: pointer; transition: all .15s; position: relative; overflow: hidden; user-select: none; }
-  .fmt-card.sel { border-color: var(--accent); background: rgba(212,255,30,.07); }
-  .fmt-card.sel::after { content: '✓'; position: absolute; top: 6px; right: 8px; font-family: var(--mono); font-size: 8px; color: var(--accent); }
-  .fmt-name { font-family: var(--sans); font-size: 20px; font-weight: 800; letter-spacing: -.5px; margin-bottom: 3px; }
-  .fmt-card.sel .fmt-name { color: var(--accent); }
-  .fmt-sub { font-family: var(--mono); font-size: 8px; color: var(--muted); text-transform: uppercase; line-height: 1.5; }
-  .q-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 28px; }
-  .q-btn { font-family: var(--mono); font-size: 9px; padding: 7px 12px; border: 1px solid var(--b); background: transparent; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; cursor: pointer; transition: all .15s; user-select: none; }
-  .q-btn.sel { border-color: var(--accent); color: var(--accent); background: rgba(212,255,30,.07); }
-  .dl-btn { width: 100%; padding: 20px; background: var(--accent); color: #070707; border: none; cursor: pointer; font-family: var(--sans); font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 3px; transition: all .15s; position: relative; overflow: hidden; }
-  .dl-btn:active:not(:disabled) { background: #eeff66; transform: scale(.99); }
-  .dl-btn:disabled { opacity: .4; cursor: not-allowed; }
-  .dl-btn .inner { display: flex; align-items: center; justify-content: center; gap: 10px; transition: opacity .2s; }
-  .dl-btn.busy .inner { opacity: 0; }
-  .spin-ov { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity .2s; pointer-events: none; }
-  .dl-btn.busy .spin-ov { opacity: 1; }
-  .ring { width: 20px; height: 20px; border: 2.5px solid rgba(0,0,0,.2); border-top-color: #070707; border-radius: 50%; animation: spin .7s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .status-card { display: none; margin-top: 14px; border: 1px solid var(--b); background: var(--s); animation: fadeUp .25s ease; }
-  .status-card.show { display: block; }
-  @keyframes fadeUp { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:none} }
-  .sc-head { padding: 12px 16px; border-bottom: 1px solid var(--b); display: flex; align-items: center; justify-content: space-between; }
-  .sc-lbl { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); }
-  .sc-badge { font-family: var(--mono); font-size: 9px; padding: 3px 9px; border: 1px solid currentColor; text-transform: uppercase; letter-spacing: 1px; }
-  .sc-badge.fetching { color: var(--accent); }
-  .sc-badge.ready { color: var(--green); }
-  .sc-badge.error { color: var(--red); }
-  .sc-body { padding: 16px; }
-  .sc-msg { font-family: var(--mono); font-size: 11px; color: #777; line-height: 1.7; margin-bottom: 14px; word-break: break-word; }
-  .sc-msg.is-err { color: var(--red); }
-  .save-btn { display: none; width: 100%; background: var(--green); color: #070707; border: none; padding: 16px; font-family: var(--sans); font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 2.5px; cursor: pointer; transition: all .15s; align-items: center; justify-content: center; gap: 8px; text-decoration: none; text-align: center; }
-  .save-btn.show { display: flex; }
-  .save-btn:active { background: #60ffcc; }
-  .hist-wrap { margin-top: 40px; }
-  .hist-head { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-  .hist-head span { flex: 1; height: 1px; background: var(--b); }
-  .hist-list { display: flex; flex-direction: column; gap: 1px; }
-  .hi { display: flex; align-items: center; gap: 10px; padding: 11px 14px; background: var(--s); font-family: var(--mono); font-size: 9px; cursor: pointer; }
-  .hi:active { background: #141414; }
-  .hi-plat { width: 64px; color: var(--muted); flex-shrink: 0; }
-  .hi-url { flex: 1; color: #383838; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .hi-fmt { width: 32px; color: var(--accent); font-weight: 700; text-align: right; }
-  .empty-hist { font-family: var(--mono); font-size: 10px; color: #222; padding: 10px 0; }
-  footer { margin-top: 50px; padding: 18px 0; border-top: 1px solid var(--b); display: flex; justify-content: space-between; }
-  .ft { font-family: var(--mono); font-size: 9px; color: #222; }
-  .ft a { color: #333; text-decoration: none; }
+  html{-webkit-tap-highlight-color:transparent}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:linear-gradient(rgba(212,255,30,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(212,255,30,.018) 1px,transparent 1px);
+    background-size:44px 44px}
+  .page{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:0 18px 100px}
+
+  header{padding:36px 0 28px;border-bottom:1px solid var(--b);margin-bottom:28px;display:flex;align-items:center;justify-content:space-between}
+  .logo{font-size:34px;font-weight:800;letter-spacing:-1.5px;line-height:1}
+  .logo em{color:var(--accent);font-style:normal}
+  .wave{display:flex;gap:3px;align-items:center;height:20px;margin-top:8px}
+  .wb{width:3px;border-radius:2px;background:var(--accent);opacity:.3;animation:wv var(--d,.8s) ease-in-out infinite alternate;animation-delay:var(--dl,0s);transform-origin:bottom}
+  @keyframes wv{from{transform:scaleY(.1)}to{transform:scaleY(1)}}
+
+  /* server status */
+  .srv{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:1px;
+    padding:5px 10px;border:1px solid var(--b);color:var(--muted);transition:all .3s;text-align:right;line-height:1.6}
+  .srv.ok{border-color:var(--green);color:var(--green);background:rgba(30,255,160,.05)}
+  .srv.fail{border-color:var(--red);color:var(--red);background:rgba(255,63,108,.05)}
+
+  .plat-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+  .plat-chip{font-family:var(--mono);font-size:9px;padding:5px 10px;border:1px solid var(--b);color:var(--muted);text-transform:uppercase;letter-spacing:.5px;user-select:none}
+  .plat-chip.ayt{border-color:#ff4040;color:#ff4040;background:rgba(255,64,64,.06)}
+  .plat-chip.asc{border-color:#ff5500;color:#ff5500;background:rgba(255,85,0,.06)}
+  .plat-chip.amc{border-color:#7040ff;color:#7040ff;background:rgba(112,64,255,.06)}
+  .plat-chip.aig{border-color:#e1306c;color:#e1306c;background:rgba(225,48,108,.06)}
+
+  .lbl{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:8px;display:block}
+  .url-wrap{display:flex;border:1px solid var(--b);margin-bottom:20px;transition:border-color .2s,box-shadow .2s}
+  .url-wrap:focus-within{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+  .url-wrap.err{border-color:var(--red);box-shadow:0 0 0 1px var(--red)}
+  .url-input{flex:1;min-width:0;background:var(--s);border:none;outline:none;padding:15px 14px;font-family:var(--mono);font-size:12px;color:var(--text);caret-color:var(--accent)}
+  .url-input::placeholder{color:#242424}
+  .paste-btn{background:var(--s);border:none;border-left:1px solid var(--b);padding:0 14px;font-family:var(--mono);font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;cursor:pointer;white-space:nowrap}
+  .paste-btn:active{color:var(--accent);background:rgba(212,255,30,.07)}
+
+  .fmt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:18px}
+  .fmt-card{border:1px solid var(--b);background:var(--s);padding:16px 10px;text-align:center;cursor:pointer;position:relative;overflow:hidden;user-select:none}
+  .fmt-card.sel{border-color:var(--accent);background:rgba(212,255,30,.07)}
+  .fmt-card.sel::after{content:'✓';position:absolute;top:6px;right:8px;font-family:var(--mono);font-size:8px;color:var(--accent)}
+  .fmt-name{font-family:var(--sans);font-size:20px;font-weight:800;letter-spacing:-.5px;margin-bottom:3px}
+  .fmt-card.sel .fmt-name{color:var(--accent)}
+  .fmt-sub{font-family:var(--mono);font-size:8px;color:var(--muted);text-transform:uppercase;line-height:1.5}
+
+  .q-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:28px}
+  .q-btn{font-family:var(--mono);font-size:9px;padding:7px 12px;border:1px solid var(--b);background:transparent;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;cursor:pointer;user-select:none}
+  .q-btn.sel{border-color:var(--accent);color:var(--accent);background:rgba(212,255,30,.07)}
+
+  .dl-btn{width:100%;padding:20px;background:var(--accent);color:#070707;border:none;cursor:pointer;font-family:var(--sans);font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:3px;transition:all .15s;position:relative;overflow:hidden}
+  .dl-btn:active:not(:disabled){background:#eeff66;transform:scale(.99)}
+  .dl-btn:disabled{opacity:.4;cursor:not-allowed}
+  .dl-btn .inner{display:flex;align-items:center;justify-content:center;gap:10px;transition:opacity .2s}
+  .dl-btn.busy .inner{opacity:0}
+  .spin-ov{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;pointer-events:none}
+  .dl-btn.busy .spin-ov{opacity:1}
+  .ring{width:20px;height:20px;border:2.5px solid rgba(0,0,0,.2);border-top-color:#070707;border-radius:50%;animation:spin .7s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  .status-card{display:none;margin-top:14px;border:1px solid var(--b);background:var(--s);animation:fadeUp .25s ease}
+  .status-card.show{display:block}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+  .sc-head{padding:12px 16px;border-bottom:1px solid var(--b);display:flex;align-items:center;justify-content:space-between}
+  .sc-lbl{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--muted)}
+  .sc-badge{font-family:var(--mono);font-size:9px;padding:3px 9px;border:1px solid currentColor;text-transform:uppercase;letter-spacing:1px}
+  .sc-badge.fetching{color:var(--accent)}
+  .sc-badge.ready{color:var(--green)}
+  .sc-badge.error{color:var(--red)}
+  .sc-body{padding:16px}
+  .sc-msg{font-family:var(--mono);font-size:11px;color:#777;line-height:1.7;margin-bottom:14px;word-break:break-word}
+  .sc-msg.is-err{color:var(--red)}
+
+  .save-btn{display:none;width:100%;background:var(--green);color:#070707;border:none;padding:16px;font-family:var(--sans);font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:2.5px;cursor:pointer;align-items:center;justify-content:center;gap:8px;text-decoration:none;text-align:center}
+  .save-btn.show{display:flex}
+  .save-btn:active{background:#60ffcc}
+
+  .hist-wrap{margin-top:40px}
+  .hist-head{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .hist-head span{flex:1;height:1px;background:var(--b)}
+  .hist-list{display:flex;flex-direction:column;gap:1px}
+  .hi{display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--s);font-family:var(--mono);font-size:9px;cursor:pointer}
+  .hi:active{background:#141414}
+  .hi-plat{width:64px;color:var(--muted);flex-shrink:0}
+  .hi-url{flex:1;color:#383838;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .hi-fmt{width:32px;color:var(--accent);font-weight:700;text-align:right}
+  .empty-hist{font-family:var(--mono);font-size:10px;color:#222;padding:10px 0}
+
+  footer{margin-top:50px;padding:18px 0;border-top:1px solid var(--b);display:flex;justify-content:space-between}
+  .ft{font-family:var(--mono);font-size:9px;color:#222}
+  .ft a{color:#333;text-decoration:none}
 </style>
 </head>
 <body>
@@ -109,26 +120,30 @@
         <div class="wb" style="height:9px;--d:.85s;--dl:.13s"></div>
       </div>
     </div>
-    <div class="powered">via <em>cobalt.tools</em></div>
+    <div class="srv" id="srvStatus">Finding server…</div>
   </header>
+
   <div class="plat-row">
     <div class="plat-chip" id="cyt">▶ YouTube</div>
     <div class="plat-chip" id="csc">☁ SoundCloud</div>
     <div class="plat-chip" id="cmc">◈ Mixcloud</div>
     <div class="plat-chip" id="cig">◉ Instagram</div>
   </div>
+
   <span class="lbl">// Paste link</span>
   <div class="url-wrap" id="urlWrap">
     <input class="url-input" id="urlInput" type="url" placeholder="https://youtube.com/watch?v=..." autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="none">
     <button class="paste-btn" id="pasteBtn">Paste</button>
   </div>
+
   <span class="lbl">// Format</span>
   <div class="fmt-grid">
     <div class="fmt-card sel" data-fmt="mp3"><div class="fmt-name">MP3</div><div class="fmt-sub">Universal<br>Lossy</div></div>
     <div class="fmt-card" data-fmt="wav"><div class="fmt-name">WAV</div><div class="fmt-sub">Raw PCM<br>Studio</div></div>
     <div class="fmt-card" data-fmt="opus"><div class="fmt-name">OGG</div><div class="fmt-sub">Efficient<br>Streaming</div></div>
   </div>
-  <span class="lbl">// Bitrate (MP3)</span>
+
+  <span class="lbl">// Bitrate</span>
   <div class="q-row">
     <button class="q-btn" data-q="64">64k</button>
     <button class="q-btn" data-q="96">96k</button>
@@ -136,6 +151,7 @@
     <button class="q-btn" data-q="256">256k</button>
     <button class="q-btn" data-q="320">320k ✦</button>
   </div>
+
   <button class="dl-btn" id="dlBtn">
     <div class="inner">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -143,43 +159,101 @@
     </div>
     <div class="spin-ov"><div class="ring"></div></div>
   </button>
+
   <div class="status-card" id="statusCard">
     <div class="sc-head">
       <div class="sc-lbl">// Status</div>
       <div class="sc-badge fetching" id="scBadge">Fetching</div>
     </div>
     <div class="sc-body">
-      <div class="sc-msg" id="scMsg">Connecting to Cobalt…</div>
+      <div class="sc-msg" id="scMsg">Connecting…</div>
       <a class="save-btn" id="saveBtn" target="_blank" rel="noopener noreferrer">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         Tap to Save File
       </a>
     </div>
   </div>
+
   <div class="hist-wrap">
     <div class="hist-head"><span></span>History<span></span></div>
     <div class="hist-list" id="histList"><div class="empty-hist">No downloads yet.</div></div>
   </div>
+
   <footer>
-    <div class="ft">RIPSOUND · <a href="https://cobalt.tools" target="_blank">cobalt.tools</a></div>
+    <div class="ft">RIPSOUND · cobalt-powered</div>
     <div class="ft">Public links only</div>
   </footer>
 </div>
-<script>
-const COBALT_API = 'https://api.cobalt.tools';
-const PROXY = 'https://corsproxy.io/?url=';
-let fmt = 'mp3';
-let bitrate = '128';
-let history = JSON.parse(localStorage.getItem('rs4') || '[]');
 
+<script>
+// ── State ─────────────────────────────────────────────────────────
+let fmt = 'mp3', bitrate = '128';
+let activeInstance = null;
+let history = JSON.parse(localStorage.getItem('rs5') || '[]');
+
+// Known open-CORS cobalt instances (no auth, cors wildcard)
+// App will also try to fetch a live list and pick the best one
+const FALLBACK_INSTANCES = [
+  'https://cobalt.synzr.space',
+  'https://capi.oak.li',
+  'https://co.wukko.me',
+  'https://cobalt-api.hyper.lol',
+];
+
+// ── Find a working instance on load ──────────────────────────────
+async function findInstance() {
+  const srv = document.getElementById('srvStatus');
+  srv.textContent = 'Finding server…';
+  srv.className = 'srv';
+
+  // 1. Try fetching live instance list
+  let candidates = [...FALLBACK_INSTANCES];
+  try {
+    const r = await fetch('https://instances.cobalt.best/instances.json', {
+      headers: { 'User-Agent': 'ripsound/1.0 (+https://kalpanikp.github.io/Link-Downloader)' },
+      signal: AbortSignal.timeout(4000),
+    });
+    if (r.ok) {
+      const list = await r.json();
+      // Filter: online, no auth, cors enabled
+      const open = list
+        .filter(i => i.online && i.info?.auth === false && i.info?.cors === true)
+        .map(i => `${i.protocol}://${i.api}`);
+      if (open.length) candidates = [...open, ...FALLBACK_INSTANCES];
+    }
+  } catch (_) {}
+
+  // 2. Ping candidates, pick first that responds OK
+  for (const base of candidates) {
+    try {
+      const r = await fetch(base + '/', {
+        signal: AbortSignal.timeout(3000),
+        headers: { 'Accept': 'application/json' },
+      });
+      if (r.ok || r.status === 405) { // 405 = Method Not Allowed = server is alive
+        activeInstance = base;
+        srv.textContent = '✓ ' + new URL(base).hostname;
+        srv.className = 'srv ok';
+        return;
+      }
+    } catch (_) {}
+  }
+
+  srv.textContent = 'No server found';
+  srv.className = 'srv fail';
+}
+
+findInstance();
+
+// ── Platforms ────────────────────────────────────────────────────
 const PLATS = {
-  yt: { re: /youtu\.?be/, label: 'YouTube', cls: 'ayt' },
+  yt: { re: /youtu\.?be/,      label: 'YouTube',    cls: 'ayt' },
   sc: { re: /soundcloud\.com/, label: 'SoundCloud', cls: 'asc' },
-  mc: { re: /mixcloud\.com/, label: 'Mixcloud', cls: 'amc' },
-  ig: { re: /instagram\.com/, label: 'Instagram', cls: 'aig' },
+  mc: { re: /mixcloud\.com/,   label: 'Mixcloud',   cls: 'amc' },
+  ig: { re: /instagram\.com/,  label: 'Instagram',  cls: 'aig' },
 };
 function detect(url) {
-  for (const [k, v] of Object.entries(PLATS)) if (v.re.test(url)) return v;
+  for (const [k,v] of Object.entries(PLATS)) if (v.re.test(url)) return v;
   return { label: 'Other' };
 }
 
@@ -187,15 +261,13 @@ const urlInput = document.getElementById('urlInput');
 urlInput.addEventListener('input', () => {
   const u = urlInput.value;
   Object.keys(PLATS).forEach(k => {
-    document.getElementById('c' + k).className = 'plat-chip' + (PLATS[k].re.test(u) ? ' ' + PLATS[k].cls : '');
+    document.getElementById('c'+k).className = 'plat-chip'+(PLATS[k].re.test(u)?' '+PLATS[k].cls:'');
   });
 });
 
 document.getElementById('pasteBtn').addEventListener('click', async () => {
-  try {
-    urlInput.value = (await navigator.clipboard.readText()).trim();
-    urlInput.dispatchEvent(new Event('input'));
-  } catch { urlInput.focus(); }
+  try { urlInput.value = (await navigator.clipboard.readText()).trim(); urlInput.dispatchEvent(new Event('input')); }
+  catch { urlInput.focus(); }
 });
 
 document.querySelectorAll('.fmt-card').forEach(c =>
@@ -211,74 +283,105 @@ document.querySelectorAll('.q-btn').forEach(b =>
   })
 );
 
+// ── Download ─────────────────────────────────────────────────────
 document.getElementById('dlBtn').addEventListener('click', go);
 
 async function go() {
   const url = urlInput.value.trim();
   if (!url.startsWith('http')) {
     const w = document.getElementById('urlWrap');
-    w.classList.add('err');
-    setTimeout(() => w.classList.remove('err'), 900);
-    return;
+    w.classList.add('err'); setTimeout(()=>w.classList.remove('err'),900); return;
   }
+
+  if (!activeInstance) {
+    await findInstance();
+    if (!activeInstance) { setStatus('error','Error','Could not find a working server. Try again in a moment.',true); document.getElementById('statusCard').classList.add('show'); return; }
+  }
+
   const btn = document.getElementById('dlBtn');
   btn.classList.add('busy'); btn.disabled = true;
-  setStatus('fetching', 'Fetching', 'Connecting to Cobalt servers…');
   document.getElementById('saveBtn').classList.remove('show');
   document.getElementById('statusCard').classList.add('show');
+  setStatus('fetching', 'Fetching', 'Sending to ' + new URL(activeInstance).hostname + '…');
+
   try {
-    const proxyUrl = PROXY + encodeURIComponent(COBALT_API);
-    const res = await fetch(proxyUrl, {
+    const res = await fetch(activeInstance + '/', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
         'Accept': 'application/json',
-        'x-cors-headers': JSON.stringify({ 'Content-Type': 'application/json', 'Accept': 'application/json' }),
+        'Content-Type': 'application/json',
       },
-      body: body: JSON.stringify({ url, downloadMode: 'audio', audioFormat: fmt, audioBitrate: bitrate, filenameStyle: 'pretty' }),,
+      body: JSON.stringify({
+        url,
+        downloadMode: 'audio',
+        audioFormat: fmt,
+        audioBitrate: bitrate,
+        filenameStyle: 'pretty',
+      }),
+      signal: AbortSignal.timeout(20000),
     });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
+
     const data = await res.json();
-    if (data.status === 'error') throw new Error(data?.error?.code || 'Cobalt error');
-    const fileUrl = data.url;
+
+    if (data.status === 'error') throw new Error(data?.error?.code || 'Server error');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+
+    const fileUrl  = data.url;
     const filename = data.filename || ('audio.' + fmt);
-    if (!fileUrl) throw new Error('No download URL returned.');
+    if (!fileUrl) throw new Error('No download URL in response.');
+
     setStatus('ready', 'Ready ✓', filename);
+
     const sb = document.getElementById('saveBtn');
     sb.href = fileUrl; sb.download = filename; sb.classList.add('show');
+
+    // Auto-trigger download
     const a = document.createElement('a');
     a.href = fileUrl; a.download = filename; a.target = '_blank'; a.rel = 'noopener';
     document.body.appendChild(a); a.click();
     setTimeout(() => document.body.removeChild(a), 300);
+
     const plat = detect(url);
     history.unshift({ url, fmt: fmt.toUpperCase(), platform: plat.label, time: Date.now() });
-    if (history.length > 30) history = history.slice(0, 30);
-    localStorage.setItem('rs4', JSON.stringify(history));
+    if (history.length > 30) history = history.slice(0,30);
+    localStorage.setItem('rs5', JSON.stringify(history));
     renderHistory();
+
   } catch (err) {
-    setStatus('error', 'Error', err.message || 'Unknown error', true);
+    let msg = err.message || 'Unknown error';
+    if (msg.includes('fetch') || msg.includes('network') || msg.includes('Load failed') || msg.includes('Failed')) {
+      // Instance failed — try finding a new one next attempt
+      activeInstance = null;
+      document.getElementById('srvStatus').textContent = 'Server failed';
+      document.getElementById('srvStatus').className = 'srv fail';
+      msg = 'Server timed out. Tap Download again — it will auto-retry a different server.';
+      findInstance();
+    }
+    setStatus('error', 'Error', msg, true);
   } finally {
     btn.classList.remove('busy'); btn.disabled = false;
   }
 }
 
-function setStatus(type, badge, msg, isErr = false) {
+function setStatus(type, badge, msg, isErr=false) {
   document.getElementById('scBadge').textContent = badge;
-  document.getElementById('scBadge').className = 'sc-badge ' + type;
+  document.getElementById('scBadge').className = 'sc-badge '+type;
   const m = document.getElementById('scMsg');
   m.textContent = msg;
-  m.className = 'sc-msg' + (isErr ? ' is-err' : '');
+  m.className = 'sc-msg'+(isErr?' is-err':'');
 }
 
 function renderHistory() {
   const list = document.getElementById('histList');
   if (!history.length) { list.innerHTML = '<div class="empty-hist">No downloads yet.</div>'; return; }
-  list.innerHTML = history.map((h, i) => `<div class="hi" onclick="loadH(${i})"><div class="hi-plat">${h.platform}</div><div class="hi-url">${h.url}</div><div class="hi-fmt">${h.fmt}</div></div>`).join('');
+  list.innerHTML = history.map((h,i) =>
+    `<div class="hi" onclick="loadH(${i})"><div class="hi-plat">${h.platform}</div><div class="hi-url">${h.url}</div><div class="hi-fmt">${h.fmt}</div></div>`
+  ).join('');
 }
 function loadH(i) {
   urlInput.value = history[i].url;
   urlInput.dispatchEvent(new Event('input'));
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
 renderHistory();
