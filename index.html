@@ -235,7 +235,7 @@ async function go() {
         'Accept': 'application/json',
         'x-cors-headers': JSON.stringify({ 'Content-Type': 'application/json', 'Accept': 'application/json' }),
       },
-      body: JSON.stringify({ url, isAudioOnly: true, audioFormat: fmt, audioBitrate: bitrate, filenamePattern: 'pretty' }),
+      body: body: JSON.stringify({ url, downloadMode: 'audio', audioFormat: fmt, audioBitrate: bitrate, filenameStyle: 'pretty' }),,
     });
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
